@@ -1,6 +1,6 @@
 {
   "name": "@sndwrks/osc-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simple OSC command-line tool",
   "keywords": [
     "osc",

@@ -139,8 +139,6 @@ export function sendTCP (
 
   logger.info(`Attempting send... address: ${address}, args: ${args}, host: ${host}, port: ${port}`);
 
-  logger.info({ tcpPort });
-
   tcpPort.on('ready', () => {
     logger.info(`Sending OSC message via TCP to ${host}:${port}`);
 
