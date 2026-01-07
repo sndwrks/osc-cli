@@ -34,7 +34,7 @@ osc-cli listen-udp 8000
 npm install
 ```
 
-### Install from npm (if published)
+### Install from npm
 
 ```bash
 npm install -g @sndwrks/osc-cli
