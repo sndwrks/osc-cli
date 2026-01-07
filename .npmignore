@@ -1,0 +1,27 @@
+# Source files (TypeScript will be compiled)
+src/
+tsconfig.json
+
+# Development files
+.gitignore
+*.log
+.DS_Store
+
+# Test files
+test/
+*.test.ts
+*.spec.ts
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Documentation source (keep README.md)
+docs/
+
+# Development artifacts
+node_modules/
+*.tgz
+
+# Keep dist/ folder - it's needed for the package to work!
+# (dist/ is in .gitignore but should be published to npm)
