@@ -1,5 +1,7 @@
+/* eslint-disable max-classes-per-file */
 declare module 'osc' {
-  import { EventEmitter } from 'events';
+  import { EventEmitter } from 'node:events';
+  import * as net from 'node:net';
 
   export interface OSCMessage {
     address: string;
@@ -21,33 +23,52 @@ declare module 'osc' {
   }
 
   export interface TCPSocketPortOptions {
-    localAddress?: string;
-    localPort?: number;
-    remoteAddress?: string;
-    remotePort?: number;
+    address?: string;
+    port?: number;
+    socket?: net.Socket;
     metadata?: boolean;
   }
 
   export class UDPPort extends EventEmitter {
     constructor(options: UDPPortOptions);
+
     open(): void;
+
     close(): void;
+
     send(message: OSCMessage, address?: string, port?: number): void;
+
     on(event: 'ready', listener: () => void): this;
+
     on(event: 'message', listener: (message: OSCMessage, timeTag?: any, info?: any) => void): this;
+
     on(event: 'error', listener: (error: Error) => void): this;
+
     on(event: 'close', listener: () => void): this;
   }
 
   export class TCPSocketPort extends EventEmitter {
     constructor(options: TCPSocketPortOptions);
-    open(): void;
+
+    open(address?: string, port?: number): void;
+
+    listen(): void;
+
     close(): void;
+
+    sendRaw(message: Buffer): void;
+
     send(message: OSCMessage): void;
+
     on(event: 'ready', listener: () => void): this;
-    on(event: 'message', listener: (message: OSCMessage, timeTag?: any, info?: any) => void): this;
+
+    on(event: 'data', listener: (message: OSCMessage, timeTag?: any, info?: any) => void): this;
+
     on(event: 'error', listener: (error: Error) => void): this;
+
     on(event: 'close', listener: () => void): this;
+
+    on(event: 'open', listener: () => void): this;
   }
 
   export interface WebSocketPortOptions {
@@ -57,12 +78,19 @@ declare module 'osc' {
 
   export class WebSocketPort extends EventEmitter {
     constructor(options: WebSocketPortOptions);
+
     open(): void;
+
     close(): void;
+
     send(message: OSCMessage): void;
+
     on(event: 'ready', listener: () => void): this;
+
     on(event: 'message', listener: (message: OSCMessage, timeTag?: any, info?: any) => void): this;
+
     on(event: 'error', listener: (error: Error) => void): this;
+
     on(event: 'close', listener: () => void): this;
   }
 }

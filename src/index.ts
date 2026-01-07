@@ -1,14 +1,15 @@
 import osc from 'osc';
 import { beginLogging, configureLogger } from '@sndwrks/lumberjack';
+import * as net from 'node:net';
 
 // Configure logger globally
 configureLogger({
   logToConsole: {
     enabled: true,
-    type: 'pretty'
+    type: 'pretty',
   },
   logLevel: 'info',
-  service: 'osc-cli'
+  service: 'osc-cli',
 });
 
 // Create logger instance
@@ -17,11 +18,11 @@ const logger = beginLogging({ name: 'OSC-CLI' });
 /**
  * Listen for OSC messages via UDP
  */
-export function listenUDP(port: number = 57121) {
+export function listenUDP (port: number = 57121) {
   const udpPort = new osc.UDPPort({
     localAddress: '0.0.0.0',
     localPort: port,
-    metadata: true
+    metadata: true,
   });
 
   udpPort.on('ready', () => {
@@ -31,7 +32,7 @@ export function listenUDP(port: number = 57121) {
   udpPort.on('message', (oscMsg: any) => {
     logger.info('UDP OSC message received:', {
       address: oscMsg.address,
-      args: oscMsg.args
+      args: oscMsg.args,
     });
   });
 
@@ -46,61 +47,69 @@ export function listenUDP(port: number = 57121) {
 /**
  * Listen for OSC messages via TCP
  */
-export function listenTCP(port: number = 57122) {
-  const tcpPort = new osc.TCPSocketPort({
-    localAddress: '0.0.0.0',
-    localPort: port,
-    metadata: true
-  });
-
-  tcpPort.on('ready', () => {
-    logger.info(`Listening for OSC over TCP on port ${port}`);
-  });
-
-  tcpPort.on('message', (oscMsg: any) => {
-    logger.info('TCP OSC message received:', {
-      address: oscMsg.address,
-      args: oscMsg.args
+export function listenTCP (port: number = 57122) {
+  let tcpPort;
+  const tcpServer = net.createServer((socket) => {
+    tcpPort = new osc.TCPSocketPort({
+      socket,
     });
+
+    tcpPort.on('ready', () => {
+      logger.info(`Listening for OSC over TCP on port ${port}`);
+    });
+
+    tcpPort.on('data', (oscMsg: any) => {
+      logger.info('TCP OSC message received:', {
+        address: oscMsg.address,
+        args: oscMsg.args,
+      });
+    });
+
+    tcpPort.on('error', (err: Error) => {
+      logger.error('TCP Error:', err);
+    });
+
+    tcpPort.listen();
   });
 
-  tcpPort.on('error', (err: Error) => {
-    logger.error('TCP Error:', err);
+  tcpServer.on('error', (e) => {
+    logger.error(e);
   });
 
-  tcpPort.open();
-  return tcpPort;
+  tcpServer.listen(port, '0.0.0.0', () => {
+    logger.info('TCP server listening on port');
+  });
 }
 
 /**
  * Send OSC message via UDP
  */
-export function sendUDP(
+export function sendUDP (
   address: string,
   args: any[],
   host: string = '127.0.0.1',
-  port: number = 57121
+  port: number = 57121,
 ) {
   const udpPort = new osc.UDPPort({
     localAddress: '0.0.0.0',
     localPort: 0,
-    metadata: true
+    metadata: true,
   });
 
   udpPort.on('ready', () => {
     logger.info(`Sending OSC message via UDP to ${host}:${port}`);
-    
+
     udpPort.send(
       {
-        address: address,
-        args: args
+        address,
+        args,
       },
       host,
-      port
+      port,
     );
 
     logger.info('Message sent:', { address, args });
-    
+
     // Close after sending
     setTimeout(() => {
       udpPort.close();
@@ -117,33 +126,36 @@ export function sendUDP(
 /**
  * Send OSC message via TCP
  */
-export function sendTCP(
+export function sendTCP (
   address: string,
   args: any[],
   host: string = '127.0.0.1',
-  port: number = 57122
+  port: number = 57122,
 ) {
   const tcpPort = new osc.TCPSocketPort({
-    localAddress: '0.0.0.0',
-    localPort: 0,
-    remoteAddress: host,
-    remotePort: port,
-    metadata: true
+    address: '0.0.0.0',
+    port: 52000,
   });
+
+  logger.info(`Attempting send... address: ${address}, args: ${args}, host: ${host}, port: ${port}`);
+
+  logger.info({ tcpPort });
 
   tcpPort.on('ready', () => {
     logger.info(`Sending OSC message via TCP to ${host}:${port}`);
-    
+
     tcpPort.send({
-      address: address,
-      args: args
+      address,
+      args,
     });
 
     logger.info('Message sent:', { address, args });
-    
+
     // Close after sending
     setTimeout(() => {
       tcpPort.close();
+      logger.info('TCP Port closed.');
+      process.exit(0);
     }, 100);
   });
 
@@ -151,7 +163,7 @@ export function sendTCP(
     logger.error('TCP Send Error:', err);
   });
 
-  tcpPort.open();
+  tcpPort.open(host, port);
 }
 
 export { logger };

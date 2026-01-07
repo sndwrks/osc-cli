@@ -37,7 +37,7 @@ npm install
 ### Install from npm (if published)
 
 ```bash
-npm install -g osc-cli
+npm install -g @sndwrks/osc-cli
 ```
 
 ## Build
@@ -49,6 +49,12 @@ npm run build
 ## Usage
 
 Once installed globally, use the `osc-cli` command. If not installed globally, use `npm start` instead.
+
+```bash
+npm start -- listen-udp <port>
+npm start -- listen-tcp <port>
+npm start -- listen-both <udp-port> <tcp-port>
+```
 
 ### Listen for OSC Messages
 
@@ -79,6 +85,7 @@ osc-cli send-udp /synth/note 440 0.5 localhost 8000
 ```
 
 **TCP:**
+NOTE: This is currently broken due to issue in osc.js
 ```bash
 osc-cli send-tcp /test hello 123 127.0.0.1 57122
 osc-cli send-tcp /synth/note 440 0.5 localhost 8001

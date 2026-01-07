@@ -1,11 +1,28 @@
 {
-  "name": "osc-cli",
-  "version": "1.0.0",
+  "name": "@sndwrks/osc-cli",
+  "version": "1.0.1",
   "description": "Simple OSC command-line tool",
+  "keywords": [
+    "osc",
+    "cli",
+    "tcp",
+    "udp",
+    "open-sound-control"
+  ],
+  "homepage": "https://github.com/sndwrks/osc-cli#readme",
+  "bugs": {
+    "url": "https://github.com/sndwrks/osc-cli/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sndwrks/osc-cli.git"
+  },
+  "license": "MIT",
+  "author": "john mckenna",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "osc-cli": "./dist/cli.js"
+    "osc-cli": "dist/cli.js"
   },
   "files": [
     "dist",
@@ -14,28 +31,22 @@
   ],
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "tsc && node dist/index.js",
+    "start": "node dist/cli.js",
+    "dev": "tsc && node dist/cli.js",
     "prepublishOnly": "npm run build",
     "prepack": "npm run build"
   },
   "dependencies": {
     "@sndwrks/lumberjack": "^0.8.0",
-    "osc": "^2.4.4"
+    "osc": "^2.4.5"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
-  },
-  "keywords": ["osc", "cli", "tcp", "udp", "open-sound-control"],
-  "author": "",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/osc-cli.git"
-  },
-  "bugs": {
-    "url": "https://github.com/yourusername/osc-cli/issues"
-  },
-  "homepage": "https://github.com/yourusername/osc-cli#readme"
+    "typescript": "^5.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.50.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-import-resolver-typescript": "^4.4.3"
+  }
 }

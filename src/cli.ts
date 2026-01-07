@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-import { listenUDP, listenTCP, sendUDP, sendTCP, logger } from './index.js';
+import {
+  listenUDP, listenTCP, sendUDP, sendTCP, logger,
+} from './index.js';
 
 // CLI Interface
 const args = process.argv.slice(2);
@@ -31,7 +33,7 @@ switch (command) {
       process.exit(1);
     }
     const udpAddress = args[1];
-    const udpArgs = args.slice(2, -2).map(arg => {
+    const udpArgs = args.slice(2, -2).map((arg) => {
       const num = parseFloat(arg);
       return isNaN(num) ? arg : num;
     });
@@ -46,7 +48,7 @@ switch (command) {
       process.exit(1);
     }
     const tcpAddress = args[1];
-    const tcpArgs = args.slice(2, -2).map(arg => {
+    const tcpArgs = args.slice(2, -2).map((arg) => {
       const num = parseFloat(arg);
       return isNaN(num) ? arg : num;
     });
