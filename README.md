@@ -85,7 +85,6 @@ osc-cli send-udp /synth/note 440 0.5 localhost 8000
 ```
 
 **TCP:**
-NOTE: This is currently broken due to issue in osc.js
 ```bash
 osc-cli send-tcp /test hello 123 127.0.0.1 57122
 osc-cli send-tcp /synth/note 440 0.5 localhost 8001
