@@ -2,6 +2,7 @@
 
 import {
   listenUDP, listenTCP, sendUDP, sendTCP, logger,
+  argsToTypedArgs,
 } from './index.js';
 
 // CLI Interface
@@ -33,10 +34,7 @@ switch (command) {
       process.exit(1);
     }
     const udpAddress = args[1];
-    const udpArgs = args.slice(2, -2).map((arg) => {
-      const num = parseFloat(arg);
-      return isNaN(num) ? arg : num;
-    });
+    const udpArgs = argsToTypedArgs(args.slice(2, -2));
     const udpHost = args[args.length - 2] || '127.0.0.1';
     const udpSendPort = parseInt(args[args.length - 1]) || 57121;
     sendUDP(udpAddress, udpArgs, udpHost, udpSendPort);
@@ -48,10 +46,7 @@ switch (command) {
       process.exit(1);
     }
     const tcpAddress = args[1];
-    const tcpArgs = args.slice(2, -2).map((arg) => {
-      const num = parseFloat(arg);
-      return isNaN(num) ? arg : num;
-    });
+    const tcpArgs = argsToTypedArgs(args.slice(2, -2));
     const tcpHost = args[args.length - 2] || '127.0.0.1';
     const tcpSendPort = parseInt(args[args.length - 1]) || 57122;
     sendTCP(tcpAddress, tcpArgs, tcpHost, tcpSendPort);
