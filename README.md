@@ -122,8 +122,8 @@ osc-cli send-tcp /synth/freq 440 127.0.0.1 9001
 If you haven't installed globally, you can use npm scripts:
 
 ```bash
-npm run build          # Build TypeScript
-npm start listen-udp   # Run with npm start
+npm run build        
+npm start listen-udp -- <args> 
 ```
 
 ## Uninstall
@@ -132,9 +132,6 @@ npm start listen-udp   # Run with npm start
 npm uninstall -g osc-cli
 ```
 
-## Publishing to NPM
-
-See [PUBLISHING.md](PUBLISHING.md) for detailed instructions on how to publish this package to npm with the TypeScript build step.
 
 ## Dependencies
 
@@ -142,3 +139,8 @@ See [PUBLISHING.md](PUBLISHING.md) for detailed instructions on how to publish t
 - `@sndwrks/lumberjack`: Winston-based logging library
 
 **Note:** This package includes custom TypeScript type definitions for the `osc` library in `src/types/osc.d.ts` since the osc package doesn't provide its own types.
+
+## Wants and Desires
+
+- roll in nodemon
+- add some way to send messages on an interval
