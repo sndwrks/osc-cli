@@ -1,10 +1,12 @@
-# OSC CLI Tool
+![sndwrks logo](images/sndwrks-square_200px-high.png)
 
-**DISCLAIMER: this was written by AI, but it will be maintained by humans (probably)**
+# osc-cli
 
-A simple command-line application for sending and receiving OSC (Open Sound Control) messages via TCP and UDP.
+**DISCLAIMER: this was written by AI, and promptly rewritten, but it will be maintained by humans (probably).**
 
-## Features
+A simple command-line application for sending and receiving OSC (Open Sound Control) messages via TCP and UDP including load testing.
+
+## What does it do?
 
 - Listen for OSC messages via UDP
 - Listen for OSC messages via TCP
@@ -16,45 +18,31 @@ A simple command-line application for sending and receiving OSC (Open Sound Cont
 
 ## Installation
 
-### Install Globally
-
-```bash
-npm install -g .
-```
-
-After installation, you can use the `osc-cli` command from anywhere:
-
-```bash
-osc-cli listen-udp 8000
-```
-
-### Install as Dependency
-
-```bash
-npm install
-```
-
 ### Install from npm
 
 ```bash
 npm install -g @sndwrks/osc-cli
 ```
 
-## Build
+### Install from Github
 
 ```bash
+# clone down the repo
+git clone git@github.com:sndwrks/osc-cli.git
+
+# install globally
+npm i -g .
+
+# otherwise build and run locally
+npm i
 npm run build
+npm start -- <commands>
 ```
 
 ## Usage
 
-Once installed globally, use the `osc-cli` command. If not installed globally, use `npm start` instead.
+Once installed globally, use`osc-cli <command>`. If not installed globally, use `npm start -- <command>` instead.
 
-```bash
-npm start -- listen-udp <port>
-npm start -- listen-tcp <port>
-npm start -- listen-both <udp-port> <tcp-port>
-```
 
 ### Listen for OSC Messages
 
@@ -131,13 +119,6 @@ npm start listen-udp -- <args>
 npm uninstall -g osc-cli
 ```
 
-
-## Dependencies
-
-- `osc`: OSC protocol implementation
-- `@sndwrks/lumberjack`: Winston-based logging library
-
-**Note:** This package includes custom TypeScript type definitions for the `osc` library in `src/types/osc.d.ts` since the osc package doesn't provide its own types.
 
 ## Wants and Desires
 

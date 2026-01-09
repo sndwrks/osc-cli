@@ -2,13 +2,11 @@
 declare module 'osc' {
   import { EventEmitter } from 'node:events';
   import * as net from 'node:net';
+  import type { OSCArg } from './types.d.ts';
 
   export interface OSCMessage {
     address: string;
-    args: Array<{
-      type: string;
-      value: any;
-    }> | any[];
+    args: OSCArg[]
   }
 
   export interface UDPPortOptions {
@@ -62,7 +60,7 @@ declare module 'osc' {
 
     on(event: 'ready', listener: () => void): this;
 
-    on(event: 'data', listener: (message: OSCMessage, timeTag?: any, info?: any) => void): this;
+    on(event: 'message', listener: (message: OSCMessage, timeTag?: any, info?: any) => void): this;
 
     on(event: 'error', listener: (error: Error) => void): this;
 

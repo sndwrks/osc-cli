@@ -1,19 +1,8 @@
 import osc from 'osc';
-import { beginLogging, configureLogger } from '@sndwrks/lumberjack';
+import { beginLogging } from '@sndwrks/lumberjack';
 import * as net from 'node:net';
 
-// Configure logger globally
-configureLogger({
-  logToConsole: {
-    enabled: true,
-    type: 'pretty',
-  },
-  logLevel: 'info',
-  service: 'osc-cli',
-});
-
-// Create logger instance
-const logger = beginLogging({ name: 'OSC-CLI' });
+const logger = beginLogging({ name: 'yeet ' });
 
 /**
  * Listen for OSC messages via UDP
@@ -58,7 +47,7 @@ export function listenTCP (port: number = 57122) {
       logger.info(`Listening for OSC over TCP on port ${port}`);
     });
 
-    tcpPort.on('data', (oscMsg: any) => {
+    tcpPort.on('message', (oscMsg: any) => {
       logger.info('TCP OSC message received:', {
         address: oscMsg.address,
         args: oscMsg.args,

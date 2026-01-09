@@ -38,15 +38,16 @@
   },
   "dependencies": {
     "@sndwrks/lumberjack": "^0.8.0",
+    "commander": "^14.0.2",
     "osc": "^2.4.5"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^8.50.1",
     "@typescript-eslint/parser": "^8.34.1",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-import-resolver-typescript": "^4.4.3"
+    "eslint-import-resolver-typescript": "^4.4.3",
+    "typescript": "^5.0.0"
   }
 }
