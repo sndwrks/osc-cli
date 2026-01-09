@@ -164,4 +164,21 @@ export function sendTCP (
   tcpPort.open(host, port);
 }
 
+export function argsToTypedArgs(args: string[]) {
+  return args.map((arg) => {
+        let type = 's'
+        let value: string | number = arg
+        const num = parseFloat(arg);
+        if (!isNaN(num)){
+          value = num
+          if (arg.includes('.')) {
+            type = 'f'
+          } else {
+            type = 'i'
+          }
+        }
+        return {type, value};
+      })
+}
+
 export { logger };
