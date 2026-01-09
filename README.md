@@ -2,6 +2,12 @@
 
 # osc-cli
 
+![NPM Version](https://img.shields.io/npm/v/%40sndwrks%2Fosc-cli?style=flat-square&color=rgb(239%2C%20145%2C%2081))
+![GitHub License](https://img.shields.io/github/license/sndwrks/osc-cli?style=flat&color=rgb(14%2C%2022%2C%2025))
+![Node LTS](https://img.shields.io/node/v-lts/%40sndwrks%2Fosc-cli)
+
+
+
 **DISCLAIMER: this was written by AI, and promptly rewritten, but it will be maintained by humans (probably).**
 
 A simple command-line application for sending and receiving OSC (Open Sound Control) messages via TCP and UDP including load testing.
