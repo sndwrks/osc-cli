@@ -1,4 +1,4 @@
-import type { OSCArg } from '../types/types.d.ts';
+import type { OSCArg } from '../types/types.js';
 
 // eslint-disable-next-line import/prefer-default-export
 export function argsToTypedArgs (args: string[]): OSCArg[] {

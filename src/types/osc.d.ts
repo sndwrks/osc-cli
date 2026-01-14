@@ -2,7 +2,7 @@
 declare module 'osc' {
   import { EventEmitter } from 'node:events';
   import * as net from 'node:net';
-  import type { OSCArg } from './types.d.ts';
+  import type { OSCArg } from './types.js';
 
   export interface OSCMessage {
     address: string;
