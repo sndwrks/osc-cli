@@ -21,6 +21,8 @@ A simple command-line application for sending and receiving OSC (Open Sound Cont
 - Send OSC messages via TCP
 - Load Testing with UDP
 - Load Testing with TCP
+- Integration Testing with UDP (send to app, validate response)
+- Integration Testing with TCP (send to app, validate response)
 
 ## Installation
 
@@ -209,6 +211,86 @@ osc-cli osc-load-test-tcp \
   --custom-address /my/custom/address
 ```
 
+### Integration Testing
+
+Integration testing commands send messages to a remote application and validate the responses. The remote application should echo back OSC messages to the local listener port.
+
+#### Args
+
+| Flag | Option | Type | Required | Description | Example | Default |
+|------|--------|------|----------|-------------|---------|---------|
+| `-i` | `--remote-ip-address <ip>` | string | Yes | Remote IP to send messages to | 10.10.209.5 | |
+| `-p` | `--remote-port <port>` | number | Yes | Remote port to send messages to | 8000 | |
+| | `--mode <mode>` | string | Yes | Test mode: "single" or "load" | single | |
+| | `--local-ip-address <ip>` | string | No | Local IP to listen for responses | | 0.0.0.0 |
+| | `--local-port <port>` | number | No | Local port to listen for responses | | 57120 (UDP) / 57121 (TCP) |
+| `-a` | `--address <address>` | string | No | OSC address to send | /test | /test |
+| | `--args <args...>` | string[] | No | Arguments to send | hello 123 | |
+| | `--expected-address <address>` | string | No | Expected response address | /response | sent address |
+| | `--expected-args <args...>` | string[] | No | Expected response args | ok 1 | sent args |
+| | `--timeout <ms>` | number | No | Response timeout | | 5000 |
+| | `--messages-per-batch <n>` | number | No | Messages per batch (load mode) | | |
+| | `--total-batches <n>` | number | No | Total batches (load mode) | | |
+| | `--batch-interval <seconds>` | number | No | Interval between batches (load mode) | | |
+| | `--message-rate <n>` | number | No | Messages per second (load mode) | | |
+
+**UDP Integration Test (single message):**
+```bash
+# Send a message and validate the response matches
+osc-cli test-osc-udp \
+  --mode single \
+  -i 127.0.0.1 \
+  -p 8000 \
+  -a /test \
+  --args hello 123
+
+# With custom expected response
+osc-cli test-osc-udp \
+  --mode single \
+  -i 127.0.0.1 \
+  -p 8000 \
+  -a /ping \
+  --expected-address /pong \
+  --expected-args ok
+```
+
+**UDP Integration Test (load test):**
+```bash
+# Load test with throughput validation
+osc-cli test-osc-udp \
+  --mode load \
+  -i 127.0.0.1 \
+  -p 8000 \
+  --messages-per-batch 100 \
+  --total-batches 10 \
+  --batch-interval 1
+```
+
+**TCP Integration Test (single message):**
+```bash
+osc-cli test-osc-tcp \
+  --mode single \
+  -i 127.0.0.1 \
+  -p 8001 \
+  -a /test \
+  --args hello 123
+```
+
+**TCP Integration Test (load test):**
+```bash
+osc-cli test-osc-tcp \
+  --mode load \
+  -i 127.0.0.1 \
+  -p 8001 \
+  --messages-per-batch 50 \
+  --total-batches 5 \
+  --batch-interval 2 \
+  --message-rate 100
+```
+
+**Exit codes:**
+- `0` - Test passed (single: response matched; load: no dropped messages)
+- `1` - Test failed (timeout, mismatch, or dropped messages)
 
 ## Development
 

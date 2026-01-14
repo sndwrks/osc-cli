@@ -9,6 +9,8 @@ import { sendTcpMessage } from './osc-senders/sendTcpMessage.js';
 import { sendUdpMessage } from './osc-senders/sendUdpMessage.js';
 import { createOscUdpLoadTest } from './osc-load-test/oscLoadTestUdp.js';
 import { createOscTcpLoadTest } from './osc-load-test/oscLoadTestTcp.js';
+import { createOscUdpTest } from './osc-test/testOscUdp.js';
+import { createOscTcpTest } from './osc-test/testOscTcp.js';
 
 configureLogger({
   logToConsole: {
@@ -164,6 +166,154 @@ program
     });
 
     await oscLoadTestTest.start();
+  });
+
+program
+  .command('test-osc-udp')
+  .name('test-osc-udp')
+  .description('Integration test via UDP. Sends messages to a remote application and validates responses.')
+  .requiredOption('--mode <mode>', 'Test mode: "single" (single message) or "load" (throughput test)')
+  .requiredOption('-i, --remote-ip-address <ip>', 'Remote IP address to send messages to')
+  .requiredOption('-p, --remote-port <port>', 'Remote port to send messages to')
+  .option('--local-ip-address <ip>', 'Local IP to listen for responses. Default: 0.0.0.0')
+  .option('--local-port <port>', 'Local port to listen for responses. Default: 57120')
+  .option('-a, --address <address>', 'OSC address to send. Default: /test')
+  .option('--args <args...>', 'Arguments to send')
+  .option('--expected-address <address>', 'Expected response address (defaults to sent address)')
+  .option('--expected-args <args...>', 'Expected response args (defaults to sent args)')
+  .option('--timeout <ms>', 'Timeout in milliseconds. Default: 5000')
+  .option('--messages-per-batch <n>', 'Messages per batch (load mode)')
+  .option('--total-batches <n>', 'Total number of batches (load mode)')
+  .option('--batch-interval <seconds>', 'Interval between batches in seconds (load mode)')
+  .option('--message-rate <n>', 'Messages per second rate limit (load mode)')
+  .action(async ({
+    mode,
+    remoteIpAddress,
+    remotePort,
+    localIpAddress,
+    localPort,
+    address,
+    args,
+    expectedAddress,
+    expectedArgs,
+    timeout,
+    messagesPerBatch,
+    totalBatches,
+    batchInterval,
+    messageRate,
+  }) => {
+    const test = createOscUdpTest({
+      logger,
+      mode,
+      remoteIpAddress,
+      remotePort: parseInt(remotePort, 10),
+      localIpAddress,
+      localPort: localPort ? parseInt(localPort, 10) : undefined,
+      address,
+      args,
+      expectedAddress,
+      expectedArgs,
+      timeout: timeout ? parseInt(timeout, 10) : undefined,
+      messagesPerBatch: messagesPerBatch ? parseInt(messagesPerBatch, 10) : undefined,
+      totalBatches: totalBatches ? parseInt(totalBatches, 10) : undefined,
+      batchInterval: batchInterval ? parseFloat(batchInterval) : undefined,
+      messageRate: messageRate ? parseInt(messageRate, 10) : undefined,
+    });
+
+    const result = await test.run();
+
+    logger.info('=== Test Results ===');
+    logger.info('Status: %s', result.success ? 'PASSED' : 'FAILED');
+    logger.info('Messages sent: %d', result.messagesSent);
+    logger.info('Messages received: %d', result.messagesReceived);
+    logger.info('Dropped messages: %d', result.droppedMessages);
+
+    if (result.throughput !== undefined) {
+      logger.info('Throughput: %s msg/sec', result.throughput.toFixed(2));
+    }
+    if (result.duration !== undefined) {
+      logger.info('Duration: %d ms', result.duration);
+    }
+    if (result.errors.length > 0) {
+      logger.error('Errors:');
+      result.errors.forEach((e) => logger.error('  - %s', e));
+    }
+
+    process.exit(result.success ? 0 : 1);
+  });
+
+program
+  .command('test-osc-tcp')
+  .name('test-osc-tcp')
+  .description('Integration test via TCP. Sends messages to a remote application and validates responses.')
+  .requiredOption('--mode <mode>', 'Test mode: "single" (single message) or "load" (throughput test)')
+  .requiredOption('-i, --remote-ip-address <ip>', 'Remote IP address to send messages to')
+  .requiredOption('-p, --remote-port <port>', 'Remote port to send messages to')
+  .option('--local-ip-address <ip>', 'Local IP to listen for responses. Default: 0.0.0.0')
+  .option('--local-port <port>', 'Local port to listen for responses. Default: 57121')
+  .option('-a, --address <address>', 'OSC address to send. Default: /test')
+  .option('--args <args...>', 'Arguments to send')
+  .option('--expected-address <address>', 'Expected response address (defaults to sent address)')
+  .option('--expected-args <args...>', 'Expected response args (defaults to sent args)')
+  .option('--timeout <ms>', 'Timeout in milliseconds. Default: 5000')
+  .option('--messages-per-batch <n>', 'Messages per batch (load mode)')
+  .option('--total-batches <n>', 'Total number of batches (load mode)')
+  .option('--batch-interval <seconds>', 'Interval between batches in seconds (load mode)')
+  .option('--message-rate <n>', 'Messages per second rate limit (load mode)')
+  .action(async ({
+    mode,
+    remoteIpAddress,
+    remotePort,
+    localIpAddress,
+    localPort,
+    address,
+    args,
+    expectedAddress,
+    expectedArgs,
+    timeout,
+    messagesPerBatch,
+    totalBatches,
+    batchInterval,
+    messageRate,
+  }) => {
+    const test = createOscTcpTest({
+      logger,
+      mode,
+      remoteIpAddress,
+      remotePort: parseInt(remotePort, 10),
+      localIpAddress,
+      localPort: localPort ? parseInt(localPort, 10) : undefined,
+      address,
+      args,
+      expectedAddress,
+      expectedArgs,
+      timeout: timeout ? parseInt(timeout, 10) : undefined,
+      messagesPerBatch: messagesPerBatch ? parseInt(messagesPerBatch, 10) : undefined,
+      totalBatches: totalBatches ? parseInt(totalBatches, 10) : undefined,
+      batchInterval: batchInterval ? parseFloat(batchInterval) : undefined,
+      messageRate: messageRate ? parseInt(messageRate, 10) : undefined,
+    });
+
+    const result = await test.run();
+
+    logger.info('=== Test Results ===');
+    logger.info('Status: %s', result.success ? 'PASSED' : 'FAILED');
+    logger.info('Messages sent: %d', result.messagesSent);
+    logger.info('Messages received: %d', result.messagesReceived);
+    logger.info('Dropped messages: %d', result.droppedMessages);
+
+    if (result.throughput !== undefined) {
+      logger.info('Throughput: %s msg/sec', result.throughput.toFixed(2));
+    }
+    if (result.duration !== undefined) {
+      logger.info('Duration: %d ms', result.duration);
+    }
+    if (result.errors.length > 0) {
+      logger.error('Errors:');
+      result.errors.forEach((e) => logger.error('  - %s', e));
+    }
+
+    process.exit(result.success ? 0 : 1);
   });
 
 program.parse();
